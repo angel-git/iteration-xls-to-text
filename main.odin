@@ -37,7 +37,7 @@ main :: proc() {
 }
 
 print_grouped_stories :: proc(stories: []parser.Row) {
-	portfolio_map := make(map[string][dynamic]parser.Row)
+	portfolio_map := make(map[string][dynamic]parser.Row, context.temp_allocator)
 	defer delete(portfolio_map)
 
 	for story in stories {
@@ -47,7 +47,7 @@ print_grouped_stories :: proc(stories: []parser.Row) {
 		}
 
 		if portfolio not_in portfolio_map {
-			portfolio_map[portfolio] = make([dynamic]parser.Row)
+			portfolio_map[portfolio] = make([dynamic]parser.Row, context.temp_allocator)
 		}
 		append(&portfolio_map[portfolio], story)
 	}
@@ -57,7 +57,7 @@ print_grouped_stories :: proc(stories: []parser.Row) {
 		fmt.println(strings.repeat("=", len(portfolio)))
 
 		for story in portfolio_stories {
-			fmt.printf("%s\t%s [%s]\n", story.id, story.title, story.status)
+			fmt.printf("%s - %s [%s]\n", story.id, story.title, story.status)
 		}
 	}
 
